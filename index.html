@@ -49,11 +49,21 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+/* Fixed background layer (same navy-to-green mix on every screen).
+   It is sized to the LARGEST viewport (100lvh) and kept on its own GPU layer, so when the
+   mobile address bar hides or shows during scrolling it never resizes and no seam appears. */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  top: 0; left: 0; right: 0;
+  height: 100vh;
+  height: 100lvh;
   z-index: -1;
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   background:
     radial-gradient(1200px 700px at 100% 100%, rgba(80, 183, 72, 0.45), transparent 60%),
     radial-gradient(900px 600px at 0% 0%, rgba(20, 30, 140, 0.55), transparent 60%),
@@ -298,6 +308,7 @@ h1 {
 }
 
 .done-toggle {
+  position: relative;
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
   padding: 7px 12px 7px 9px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.04);
   font-size: 0.82rem; font-weight: 700; color: var(--muted); white-space: nowrap;
@@ -311,7 +322,11 @@ h1 {
 .done-toggle input:checked + .box { background: var(--green); border-color: var(--green); }
 .done-toggle input:checked + .box svg { opacity: 1; }
 .done-toggle input:focus-visible + .box { outline: 2px solid var(--sky); outline-offset: 2px; }
-.step.done .done-toggle { color: #a7e6a0; border-color: rgba(98, 207, 108, 0.4); }
+.step-foot {
+  margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end;
+}
+.step.done .done-toggle, .meeting.done .done-toggle { color: #a7e6a0; border-color: rgba(98, 207, 108, 0.4); }
 
 /* Systems (step 6) */
 .systems { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
@@ -336,7 +351,6 @@ h1 {
 .meeting p { margin: 0; color: var(--muted); }
 .people { display: grid; gap: 10px; }
 .people .person { margin: 0; padding: 12px; border-radius: var(--radius); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); }
-.meeting .done-toggle { margin-top: 16px; }
 .meeting.done { border-color: rgba(98, 207, 108, 0.45); }
 
 /* ---------- Rules ---------- */
@@ -534,7 +548,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip loc"><svg aria-hidden="true"><use href="#i-pin"/></svg>Main entrance · Reception</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-1"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>Show the <b>email you received from SLT Mobitel</b> at reception.</span></li>
@@ -554,6 +567,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
               <svg aria-hidden="true"><use href="#i-alert"/></svg>
               <div><b>Keep the Equipment Declaration Form safe.</b> You must show it every time you enter the SLT Mobitel premises.</div>
             </div>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-1"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
 
@@ -569,13 +583,13 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip who"><svg aria-hidden="true"><use href="#i-user"/></svg>Mr. Giridaran</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-2"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>Go to the <b>9th floor of Building C</b> and meet the Internship Coordinator, <b>Mr. Giridaran</b>.</span></li>
               <li><span>Show the <b>email</b> and the <b>reference number</b> you received from SLT Mobitel.</span></li>
               <li><span>Scan the <b>QR codes</b> Mr. Giridaran gives you to join the relevant <b>WhatsApp groups</b>.</span></li>
             </ul>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-2"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
 
@@ -591,7 +605,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip who"><svg aria-hidden="true"><use href="#i-users"/></svg>HR Trainer Panel</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-3"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>Go to the <b>7th floor of Building C</b>.</span></li>
@@ -599,6 +612,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
               <li><span>Fill in the documents they give you.</span></li>
               <li><span>Hand the <b>filled documents</b> back to the HR Trainer Panel.</span></li>
             </ul>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-3"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
 
@@ -614,7 +628,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip who"><svg aria-hidden="true"><use href="#i-users"/></svg>HR Trainer Panel</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-4"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>Your placement letter will be ready about <b>3 hours</b> after you submit the filled documents.</span></li>
@@ -629,6 +642,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
               <svg aria-hidden="true"><use href="#i-alert"/></svg>
               <div><b>Keep both documents safe</b> until your internship period ends.</div>
             </div>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-4"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
 
@@ -644,7 +658,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip who"><svg aria-hidden="true"><use href="#i-user"/></svg>Mr. Giridaran</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-5"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>After collecting your placement letter, go back to the <b>9th floor</b> and meet <b>Mr. Giridaran</b> again.</span></li>
@@ -656,6 +669,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
             <ul class="do">
               <li><span>After you give these details, he will provide your <b>Trainee ID</b>.</span></li>
             </ul>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-5"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
 
@@ -670,7 +684,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                   <span class="chip time"><svg aria-hidden="true"><use href="#i-clock"/></svg>About 1 hour after your Trainee ID</span>
                 </div>
               </div>
-              <label class="done-toggle"><input type="checkbox" data-done="step-6"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
             </div>
             <ul class="do">
               <li><span>About <b>1 hour</b> after you get your Trainee ID, you will have access to <b>Talent Hub</b> and <b>Talent Trail</b>.</span></li>
@@ -700,6 +713,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
                 </div>
               </div>
             </div>
+          <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="step-6"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
           </article>
         </li>
       </ol>
@@ -711,7 +725,6 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
             <span class="pill"><svg aria-hidden="true"><use href="#i-users"/></svg>After all six steps</span>
             <h2 id="meeting-title">Project assignment meeting</h2>
             <p>Once you complete these tasks, there is a meeting. The <b>meeting time and location are shared in the WhatsApp group</b>. Attend the meeting and meet Mr. Giridaran and your supervisor. They will <b>assign you to your projects</b>.</p>
-            <label class="done-toggle"><input type="checkbox" data-done="meeting"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span>Mark done</label>
           </div>
           <div class="people">
             <div class="person">
@@ -728,6 +741,7 @@ footer { margin-top: 26px; text-align: center; font-size: 0.85rem; color: var(--
             </div>
           </div>
         </div>
+        <div class="step-foot"><label class="done-toggle"><input type="checkbox" data-done="meeting"><span class="box"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="lbl">Mark done</span></label></div>
       </section>
     </main>
   </div>
